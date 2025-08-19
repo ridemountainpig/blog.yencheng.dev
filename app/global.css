@@ -1,8 +1,12 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Nunito";
+  src: url("./fonts/NunitoBold.woff2") format("woff2");
+}
 
 ::selection {
-  background-color: #47a3f3;
-  color: #fefefe;
+  background-color: #dbc7bae1;
 }
 
 :root {
@@ -34,7 +38,7 @@ html {
 }
 
 .prose .anchor {
-  @apply absolute invisible no-underline;
+  @apply invisible absolute no-underline;
 
   margin-left: -1em;
   padding-right: 0.5em;
@@ -48,12 +52,12 @@ html {
 }
 
 .prose a {
-  @apply underline transition-all decoration-neutral-400 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em];
+  @apply underline decoration-neutral-400 decoration-[0.1em] underline-offset-2 transition-all dark:decoration-neutral-600;
 }
 
 .prose .anchor:after {
   @apply text-neutral-300 dark:text-neutral-700;
-  content: '#';
+  content: "#";
 }
 
 .prose *:hover > .anchor {
@@ -61,11 +65,11 @@ html {
 }
 
 .prose pre {
-  @apply bg-neutral-50 dark:bg-neutral-900 rounded-lg overflow-x-auto border border-neutral-200 dark:border-neutral-900 py-2 px-3 text-sm;
+  @apply overflow-x-auto rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-900 dark:bg-neutral-900;
 }
 
 .prose code {
-  @apply px-1 py-0.5 rounded-lg;
+  @apply rounded-lg px-1 py-0.5;
 }
 
 .prose pre code {
@@ -84,23 +88,23 @@ html {
 }
 
 .prose p {
-  @apply my-4 text-neutral-800 dark:text-neutral-200;
+  @apply my-4 font-thin text-neutral-800 dark:text-neutral-200;
 }
 
 .prose h1 {
-  @apply text-4xl font-medium tracking-tight mt-6 mb-2;
+  @apply mt-6 mb-2 text-2xl font-medium;
 }
 
 .prose h2 {
-  @apply text-xl font-medium tracking-tight mt-6 mb-2;
+  @apply mt-6 mb-2 text-xl font-medium;
 }
 
 .prose h3 {
-  @apply text-xl font-medium tracking-tight mt-6 mb-2;
+  @apply mt-6 mb-2 text-lg font-medium;
 }
 
 .prose h4 {
-  @apply text-lg font-medium tracking-tight mt-6 mb-2;
+  @apply mt-6 mb-2 text-base font-medium;
 }
 
 .prose strong {
@@ -131,8 +135,8 @@ pre {
 }
 
 /* Remove Safari input shadow on mobile */
-input[type='text'],
-input[type='email'] {
+input[type="text"],
+input[type="email"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -147,4 +151,31 @@ table {
 
 .title {
   text-wrap: balance;
+}
+
+@theme {
+  --color-white-black-50: #fafafa;
+  --color-white-black-100: #e4e4e4;
+  --color-white-black-200: #cdcdcd;
+  --color-white-black-300: #b7b7b7;
+  --color-white-black-400: #a0a0a0;
+  --color-white-black-500: #8a8a8a;
+  --color-white-black-600: #747474;
+  --color-white-black-700: #5d5d5d;
+  --color-white-black-800: #474747;
+  --color-white-black-900: #1a1a1a;
+
+  --color-white-brown-50: #ffffff;
+  --color-white-brown-100: #fffefc;
+  --color-white-brown-200: #fcfcfa;
+  --color-white-brown-300: #faf8f5;
+  --color-white-brown-400: #f7f2ed;
+  --color-white-brown-500: #f2e9e3;
+  --color-white-brown-600: #dbc7ba;
+  --color-white-brown-700: #b5927f;
+  --color-white-brown-800: #916651;
+  --color-white-brown-900: #6e402e;
+  --color-white-brown-950: #472013;
+
+  --font-nunito: "Nunito", sans-serif;
 }

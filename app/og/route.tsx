@@ -1,22 +1,56 @@
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from "next/og";
+import { readFile } from "fs/promises";
+import path from "path";
 
-export function GET(request: Request) {
-  let url = new URL(request.url)
-  let title = url.searchParams.get('title') || 'Next.js Portfolio Starter'
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const title = searchParams.get("title");
+
+  const fontPath = path.join(process.cwd(), "public/fonts/NunitoBold.ttf");
+  const fontData = await readFile(fontPath);
 
   return new ImageResponse(
     (
-      <div tw="flex flex-col w-full h-full items-center justify-center bg-white">
-        <div tw="flex flex-col md:flex-row w-full py-12 px-4 md:items-center justify-between p-8">
-          <h2 tw="flex flex-col text-4xl font-bold tracking-tight text-left">
-            {title}
-          </h2>
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "white",
+        }}
+      >
+        <div tw="w-full flex flex-col items-center text-center font-nunito tracking-widest text-[#1a1a1a]">
+          <div tw="flex h-fit items-center justify-center">
+            <div tw="relative flex">
+              <div tw="absolute -bottom-2 left-0 h-16 w-full bg-[#f2e9e3] opacity-90" />
+              <div tw="relative flex items-center px-4 text-8xl">
+                Yen Cheng's Blog
+              </div>
+            </div>
+          </div>
+          {title && (
+            <div tw="flex h-fit items-center justify-center pt-12">
+              <div tw="relative flex items-center px-4 text-6xl">
+                {title || "Yen Cheng's Blog"}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     ),
     {
       width: 1200,
       height: 630,
-    }
-  )
+      fonts: [
+        {
+          name: "nunito",
+          data: fontData,
+          style: "normal",
+        },
+      ],
+    },
+  );
 }
