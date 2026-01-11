@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+/* English font */
 @font-face {
-  font-family: "Nunito";
-  src: url("./fonts/NunitoBold.woff2") format("woff2");
+  font-family: "Nunito Bold Scoped";
+  src: url("/fonts/NunitoBold.woff2") format("woff2");
+  unicode-range: U+0000-00FF;
+}
+
+/* Chinese font */
+@font-face {
+  font-family: "Huninn Regular Scoped";
+  src: url("/fonts/HuninnRegular.woff2") format("woff2");
+  unicode-range: U+4E00-9FFF, U+3000-303F;
 }
 
 ::selection {
@@ -10,9 +19,9 @@
 }
 
 :root {
-  --sh-class: #2d5e9d;
+  --sh-class: #916651;
   --sh-identifier: #354150;
-  --sh-sign: #8996a3;
+  --sh-sign: #916651;
   --sh-string: #007f7a;
   --sh-keyword: #e02518;
   --sh-comment: #a19595;
@@ -35,6 +44,10 @@
 
 html {
   min-width: 360px;
+}
+
+body {
+  font-family: "Nunito Bold Scoped", "Huninn Regular Scoped", sans-serif;
 }
 
 .prose .anchor {
@@ -65,7 +78,7 @@ html {
 }
 
 .prose pre {
-  @apply overflow-x-auto rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-900 dark:bg-neutral-900;
+  @apply my-4 overflow-x-auto rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-900 dark:bg-neutral-900;
 }
 
 .prose code {
@@ -78,13 +91,24 @@ html {
   line-height: 1.5;
 }
 
+.prose pre code,
+.prose pre code * {
+  color: #1a1a1a !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose pre code,
+  .prose pre code * {
+    color: #fafafa !important;
+  }
+}
+
 .prose code span {
   @apply font-medium;
 }
 
 .prose img {
-  /* Don't apply styles to next/image */
-  @apply m-0;
+  @apply mx-0 my-4;
 }
 
 .prose p {
@@ -178,4 +202,5 @@ table {
   --color-white-brown-950: #472013;
 
   --font-nunito: "Nunito", sans-serif;
+  --font-huninn-regular: "Huninn Regular Scoped", sans-serif;
 }

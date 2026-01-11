@@ -57,7 +57,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={cx(
-        "text-white-black-900 bg-white-black-50 dark:text-white-black-50 dark:bg-white-black-900 font-nunito",
+        "text-white-black-900 bg-white-black-50 dark:text-white-black-50 dark:bg-white-black-900",
       )}
     >
       <body className="mx-4 mt-8 max-w-xl antialiased lg:mx-auto">

@@ -1,0 +1,130 @@
+---
+title: "使用 Zeabur AI Hub 解鎖 Raycast AI 功能"
+publishedAt: "2026-01-11"
+summary: "本篇文章將介紹如何將 Zeabur AI Hub 整合進 Raycast AI，讓你在 Raycast 中能更彈性地選用各種 AI 模型。"
+---
+
+在現代的工作流中，AI 已經成為非常實用的助手。Raycast 作為 macOS 上深受歡迎的生產力工具，其內建的 AI 功能（Raycast AI）更是許多人的首選。
+
+目前 Raycast 除了提供官方訂閱方案外，也支援了 **Bring Your Own Key (BYOK)** 的功能，讓使用者能根據需求選擇模型來源。此外，Raycast Windows 版也已經正式推出，雖然 AI 功能尚未全面支援，但 Windows 的使用者們可以先安裝體驗，並期待後續的更新。如果你想體驗 Raycast，可以到 [Raycast Windows 頁面](https://www.raycast.com/windows) 下載安裝。
+
+這篇文章將說明如何利用 **Zeabur AI Hub** 提供的 AI 模型服務，透過 Raycast 的 **Custom AI Providers** 功能整合進你的 Raycast 介面中。
+
+## 什麼是 Raycast AI？
+
+Raycast AI 是整合在 Raycast 本體中的人工智慧功能，主要包含以下幾個面向：
+
+- **Quick AI**：在搜尋框中直接輸入問題，按下 `Tab` 鍵即可快速獲得解答。
+- **AI Chat**：一個獨立的聊天視窗，適合進行深入的對話、程式碼除錯或撰寫長文。
+- **AI Commands**：預設或自訂的 AI 指令，例如「解釋文字」、「改寫語氣」或「翻譯」等。
+- **AI Extensions**：透過 `@` 標記特定擴展，讓 AI 能直接連動你的其他開發或生產力工具。
+
+## 什麼是 Zeabur AI Hub？
+
+[Zeabur](https://zeabur.com/) 是一個雲端部署平台，而 **Zeabur AI Hub** 則是他們推出的 AI 整合服務。它有幾個核心優勢：
+
+1. **多樣化的模型選擇**：除了 GPT-4o、Claude 3.5 外，還支援 DeepSeek、Llama 3 等強大的開源模型。
+2. **OpenAI 標準相容**：提供與 OpenAI 一致的 API 接口，幾乎所有支援 OpenAI API 的軟體都能無縫接軌。
+3. **具備成本效益**：採用按量計費，不需要支付固定的月費，適合追求彈性使用量的使用者。
+
+## 教學：將 Zeabur AI Hub 加入 Raycast AI
+
+接下來，我們就來看看該如何進行設定：
+
+### 第一步：獲取 Zeabur API Key
+
+1. 登入 [Zeabur 控制台](https://zeabur.com/projects)。
+2. 進入 [**AI Hub** 頁面](https://zeabur.com/ai-hub)。
+3. 生成一個新的 **API Key** 並複製下來備用。
+
+### 第二步：開啟 Raycast 設定
+
+1. 在 Mac 上打開 Raycast 搜尋框。
+2. 輸入 `AI` 並選擇 **AI Raycast Settings**。
+
+![Raycast AI 設定選項](/blog/raycast-zeabur-ai-hub/1.png)
+
+3. 在設定視窗右側區域滑動到最下方，找到並開啟 **Custom Providers** 選項。
+
+![開啟 Custom Providers 選項](/blog/raycast-zeabur-ai-hub/2.png)
+
+4. 接著點擊該區塊中的 **Reveal Providers Config** 按鈕，這會自動開啟 Finder 並定位到設定資料夾。
+
+![Reveal Providers Config 按鈕](/blog/raycast-zeabur-ai-hub/3.png)
+
+### 第三步：編輯 providers.yaml 設定檔
+
+1. 在開啟的 Finder 視窗中，進入 `AI` 資料夾。
+2. 找到 providers.template.yaml 檔案，並使用文字編輯器（如 VS Code 或 TextEdit）打開它。
+
+![providers.template.yaml 檔案位置](/blog/raycast-zeabur-ai-hub/4.png)
+
+3. 將內容修改為以下格式（請將 `YOUR_API_KEY` 替換為你在第一步獲得的金鑰）：
+
+```yaml
+providers:
+  - id: zeabur_ai_hub
+    name: Zeabur AI Hub
+    base_url: https://hnd1.aihub.zeabur.ai/ # 也可選擇舊金山節點：https://sfo1.aihub.zeabur.ai/
+    api_keys:
+      zeabur-ai-hub-key: YOUR_API_KEY
+    models:
+      - id: gpt-4o
+        name: "GPT-4o"
+        context: 200000
+        provider: zeabur-ai-hub-key
+        abilities:
+          temperature:
+            supported: true
+          vision:
+            supported: true
+          system_message:
+            supported: true
+          tools:
+            supported: true
+      - id: claude-sonnet-4
+        name: "Claude Sonnet 4"
+        context: 200000
+        provider: zeabur-ai-hub-key
+        abilities:
+          temperature:
+            supported: true
+          vision:
+            supported: true
+          system_message:
+            supported: true
+          tools:
+            supported: true
+```
+
+4. **新增其他模型**：如果你想使用其他模型（例如 Gemini），可以參考以下格式繼續在 `models` 列表下方新增。如果想查看 Zeabur AI Hub 有哪些模型可用，可以到 [Zeabur AI Hub 模型頁面](https://zeabur.com/zh-TW/models) 查看：
+
+```yaml
+- id: <model-name> # 例如 gemini-2.5-pro
+  name: "<model-display-name>" # 例如 "Gemini 2.5 Pro"
+  context: 200000
+  provider: zeabur-ai-hub-key
+  abilities:
+    temperature:
+      supported: true
+    vision:
+      supported: true
+    system_message:
+      supported: true
+    tools:
+      supported: true
+```
+
+5. **儲存並更名**：設定完成後，將該檔案名稱更改為 providers.yaml（去掉 `.template`）。
+
+### 第四步：在 Raycast 中選用新模型
+
+回到 Raycast 設定頁面，你應該會看到 **Zeabur AI Hub** 已經成功載入。現在打開 **AI Chat** 或使用 **Quick AI**，在模型選擇選單中就能直接切換到剛才設定的模型進行使用了。
+
+![Zeabur AI Hub Config](/blog/raycast-zeabur-ai-hub/5.png)
+
+![Raycast 中的 Zeabur AI Hub 模型選擇](/blog/raycast-zeabur-ai-hub/6.png)
+
+## 總結
+
+透過 Zeabur AI Hub 與 Raycast 的結合，你不僅能體驗到 Raycast 結合 AI 的強大功能。如果你正在尋找 Raycast Pro 以外的選擇，這會是一個非常值得一試的方案！
