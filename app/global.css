@@ -104,7 +104,7 @@ body {
 }
 
 .prose code span {
-  @apply font-medium;
+  @apply font-semibold;
 }
 
 .prose img {
