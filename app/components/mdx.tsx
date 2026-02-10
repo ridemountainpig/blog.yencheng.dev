@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
 import React from "react";
+import { Video } from "./video";
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -45,6 +46,13 @@ function CustomLink(props) {
 }
 
 function RoundedImage(props) {
+  if (
+    typeof props.src === "string" &&
+    [".mp4", ".webview", ".mov"].some((ext) => props.src.endsWith(ext))
+  ) {
+    return <Video {...props} />;
+  }
+
   return <img alt={props.alt || ""} className="rounded-2xl" {...props} />;
 }
 
@@ -71,8 +79,13 @@ function createHeading(level) {
       `h${level}`,
       {
         id: slug,
-        className:
-          "border-b-3 border-neutral-700 dark:border-neutral-300 w-fit border-dashed",
+        className: [
+          "w-fit",
+          level <= 2 &&
+            "border-b-3 border-neutral-700 border-dashed dark:border-neutral-300",
+        ]
+          .filter(Boolean)
+          .join(" "),
       },
       [
         React.createElement("a", {
@@ -101,6 +114,7 @@ let components = {
   a: CustomLink,
   code: Code,
   Table,
+  Video,
 };
 
 export function CustomMDX(props) {
