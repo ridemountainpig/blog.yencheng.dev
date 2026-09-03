@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { formatDate, getBlogPosts } from "app/blog/utils";
+import {
+  formatDate,
+  getLocalizedBlogPosts,
+  PostLanguage,
+} from "app/blog/utils";
 
-export function BlogPosts() {
-  let allBlogs = getBlogPosts();
+export function BlogPosts({ language }: { language: PostLanguage }) {
+  let allBlogs = getLocalizedBlogPosts(language);
 
   return (
     <div>
@@ -23,7 +27,7 @@ export function BlogPosts() {
           >
             <div className="flex w-full flex-col space-x-0 font-medium md:flex-row md:space-x-2">
               <p className="w-fit text-neutral-600 tabular-nums dark:text-neutral-400">
-                {formatDate(post.metadata.publishedAt, false)}
+                {formatDate(post.metadata.publishedAt, false, language)}
               </p>
               <p className="text-neutral-900 dark:text-neutral-100">
                 {post.metadata.title}

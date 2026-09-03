@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "./components/footer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://blog.yencheng.dev"),
   title: "Yen Cheng's Blog",
   description: "The personal blog of Yen Cheng Lin.",
   keywords: [

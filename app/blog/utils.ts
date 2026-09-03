@@ -1,11 +1,21 @@
 import fs from "fs";
 import path from "path";
 
-type Metadata = {
+export type PostLanguage = "en" | "zh-TW";
+
+type PostMetadata = {
   title: string;
   publishedAt: string;
   summary: string;
   image?: string;
+  language?: PostLanguage;
+  translationKey?: string;
+};
+
+export type BlogPost = {
+  metadata: PostMetadata;
+  slug: string;
+  content: string;
 };
 
 function parseFrontmatter(fileContent: string) {
@@ -14,28 +24,28 @@ function parseFrontmatter(fileContent: string) {
   let frontMatterBlock = match![1];
   let content = fileContent.replace(frontmatterRegex, "").trim();
   let frontMatterLines = frontMatterBlock.trim().split("\n");
-  let metadata: Partial<Metadata> = {};
+  let metadata: Record<string, string> = {};
 
   frontMatterLines.forEach((line) => {
     let [key, ...valueArr] = line.split(": ");
     let value = valueArr.join(": ").trim();
     value = value.replace(/^['"](.*)['"]$/, "$1"); // Remove quotes
-    metadata[key.trim() as keyof Metadata] = value;
+    metadata[key.trim()] = value;
   });
 
-  return { metadata: metadata as Metadata, content };
+  return { metadata: metadata as unknown as PostMetadata, content };
 }
 
-function getMDXFiles(dir) {
+function getMDXFiles(dir: string) {
   return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
 }
 
-function readMDXFile(filePath) {
+function readMDXFile(filePath: string) {
   let rawContent = fs.readFileSync(filePath, "utf-8");
   return parseFrontmatter(rawContent);
 }
 
-function getMDXData(dir) {
+function getMDXData(dir: string): BlogPost[] {
   let mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
     let { metadata, content } = readMDXFile(path.join(dir, file));
@@ -53,7 +63,69 @@ export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), "app", "blog", "posts"));
 }
 
-export function formatDate(date: string, includeRelative = false) {
+export function getPostLanguage(post: BlogPost): PostLanguage {
+  return post.metadata.language ?? "en";
+}
+
+export function getPostTranslations(
+  post: BlogPost,
+  posts: BlogPost[] = getBlogPosts(),
+) {
+  let translationKey = post.metadata.translationKey;
+
+  if (!translationKey) {
+    return [post];
+  }
+
+  let languageOrder: PostLanguage[] = ["zh-TW", "en"];
+
+  return posts
+    .filter((candidate) => candidate.metadata.translationKey === translationKey)
+    .sort(
+      (a, b) =>
+        languageOrder.indexOf(getPostLanguage(a)) -
+        languageOrder.indexOf(getPostLanguage(b)),
+    );
+}
+
+export function getPrimaryBlogPosts(posts: BlogPost[] = getBlogPosts()) {
+  return posts.filter((post) => {
+    let translationKey = post.metadata.translationKey;
+
+    if (!translationKey) {
+      return true;
+    }
+
+    let translations = getPostTranslations(post, posts);
+    let primaryPost =
+      translations.find((translation) => translation.slug === translationKey) ??
+      translations.find(
+        (translation) => getPostLanguage(translation) === "zh-TW",
+      ) ??
+      translations[0];
+
+    return post.slug === primaryPost.slug;
+  });
+}
+
+export function getLocalizedBlogPosts(
+  language: PostLanguage,
+  posts: BlogPost[] = getBlogPosts(),
+) {
+  return getPrimaryBlogPosts(posts).map((post) => {
+    return (
+      getPostTranslations(post, posts).find(
+        (translation) => getPostLanguage(translation) === language,
+      ) ?? post
+    );
+  });
+}
+
+export function formatDate(
+  date: string,
+  includeRelative = false,
+  language: PostLanguage = "en",
+) {
   let currentDate = new Date();
   if (!date.includes("T")) {
     date = `${date}T00:00:00`;
@@ -76,7 +148,7 @@ export function formatDate(date: string, includeRelative = false) {
     formattedDate = "Today";
   }
 
-  let fullDate = targetDate.toLocaleString("en-us", {
+  let fullDate = targetDate.toLocaleString(language, {
     month: "long",
     day: "numeric",
     year: "numeric",
