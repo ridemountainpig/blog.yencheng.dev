@@ -2,55 +2,55 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="mb-16">
-      <ul className="font-sm mt-8 flex flex-col space-y-2 space-x-0 text-neutral-600 md:flex-row md:space-y-0 md:space-x-4 dark:text-neutral-300">
+    <footer className="border-white-brown-500 mx-auto mt-24 mb-8 w-full max-w-4xl border-t pt-8 sm:mt-32">
+      <ul className="text-white-brown-800 flex flex-wrap items-center justify-center gap-2 text-sm">
         <li>
           <a
-            className="flex items-center font-medium transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            className="bg-white-brown-500 flex items-center rounded-xl px-3 py-2 transition-transform hover:-translate-y-0.5"
             rel="noopener noreferrer"
             target="_blank"
             href="https://github.com/ridemountainpig"
           >
-            <ArrowUpRight />
-            <p className="ml-1">GitHub</p>
+            <ArrowUpRight className="size-4" />
+            <span className="ml-1">GitHub</span>
           </a>
         </li>
         <li>
           <a
-            className="flex items-center font-medium transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            className="bg-white-brown-500 flex items-center rounded-xl px-3 py-2 transition-transform hover:-translate-y-0.5"
             rel="noopener noreferrer"
             target="_blank"
             href="https://x.com/ridemountainpig"
           >
-            <ArrowUpRight />
-            <p className="ml-1">X</p>
+            <ArrowUpRight className="size-4" />
+            <span className="ml-1">X</span>
           </a>
         </li>
         <li>
           <a
-            className="flex items-center font-medium transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            className="bg-white-brown-500 flex items-center rounded-xl px-3 py-2 transition-transform hover:-translate-y-0.5"
             rel="noopener noreferrer"
             target="_blank"
             href="https://www.linkedin.com/in/iamyencheng/"
           >
-            <ArrowUpRight />
-            <p className="ml-1">LinkedIn</p>
+            <ArrowUpRight className="size-4" />
+            <span className="ml-1">LinkedIn</span>
           </a>
         </li>
         <li>
           <a
-            className="flex items-center font-medium transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            className="bg-white-brown-500 flex items-center rounded-xl px-3 py-2 transition-transform hover:-translate-y-0.5"
             rel="noopener noreferrer"
             target="_blank"
             href="https://github.com/ridemountainpig/blog.yencheng.dev"
           >
-            <ArrowUpRight />
-            <p className="ml-1">View Source</p>
+            <ArrowUpRight className="size-4" />
+            <span className="ml-1">View Source</span>
           </a>
         </li>
       </ul>
-      <p className="mt-8 font-medium text-neutral-600 dark:text-neutral-300">
-        © {new Date().getFullYear()} Yen Cheng. All rights reserved.
+      <p className="font-nunito text-white-black-700 mt-6 text-center text-sm tracking-wide sm:text-base">
+        © {new Date().getFullYear()} Yen Cheng Lin. All rights reserved.
       </p>
     </footer>
   );

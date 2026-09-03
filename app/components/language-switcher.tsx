@@ -18,7 +18,7 @@ function LanguageToggle({
   return (
     <nav
       aria-label={label}
-      className="flex w-fit rounded-full border border-neutral-200 p-1 text-sm dark:border-neutral-700"
+      className="border-white-brown-500 bg-white-brown-200 flex w-fit rounded-full border p-1 text-sm"
     >
       {options.map(({ href, language }) => {
         let isCurrent = language === currentLanguage;
@@ -31,8 +31,8 @@ function LanguageToggle({
             aria-current={isCurrent ? "page" : undefined}
             className={`rounded-full px-3 py-1 transition-colors ${
               isCurrent
-                ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-                : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                ? "bg-white-brown-700 text-white"
+                : "text-white-brown-800 hover:bg-white-brown-400"
             }`}
           >
             {languageLabels[language]}

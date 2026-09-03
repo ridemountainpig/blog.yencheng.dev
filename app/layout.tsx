@@ -1,15 +1,32 @@
 import "./global.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Navbar } from "./components/nav";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "./components/footer";
 
+const nunito = localFont({
+  src: "../public/fonts/NunitoBold.woff2",
+  variable: "--font-nunito-local",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  themeColor: "#fafafa",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://blog.yencheng.dev"),
   title: "Yen Cheng's Blog",
-  description: "The personal blog of Yen Cheng Lin.",
+  description:
+    "The personal blog of Yen Cheng Lin, a software engineer and passionate creator of amazing things. Writing about Raycast extensions, side projects, and ideas.",
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss",
+    },
+  },
   keywords: [
     "Yen Cheng Lin",
     "Yen Cheng's Blog",
@@ -48,8 +65,6 @@ export const metadata: Metadata = {
   },
 };
 
-const cx = (...classes) => classes.filter(Boolean).join(" ");
-
 export default function RootLayout({
   children,
 }: {
@@ -58,12 +73,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cx(
-        "text-white-black-900 bg-white-black-50 dark:text-white-black-50 dark:bg-white-black-900",
-      )}
+      className={`${nunito.variable} bg-white-black-50 text-white-black-900`}
     >
-      <body className="mx-4 mt-8 max-w-xl antialiased lg:mx-auto">
-        <main className="mt-6 flex min-w-0 flex-auto flex-col px-2 md:px-0">
+      <body className="min-h-screen antialiased">
+        <main className="mx-auto flex min-h-screen w-full max-w-6xl min-w-0 flex-auto flex-col px-5 pt-6 sm:px-8 xl:px-0">
           <GoogleAnalytics gaId="G-D5P23L59BL" />
           <Navbar />
           {children}

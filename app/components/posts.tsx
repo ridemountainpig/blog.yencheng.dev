@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import {
   formatDate,
   getLocalizedBlogPosts,
@@ -6,35 +7,69 @@ import {
 } from "app/blog/utils";
 
 export function BlogPosts({ language }: { language: PostLanguage }) {
-  let allBlogs = getLocalizedBlogPosts(language);
+  let blogsByYear = getLocalizedBlogPosts(language)
+    .sort(
+      (a, b) =>
+        new Date(b.metadata.publishedAt).getTime() -
+        new Date(a.metadata.publishedAt).getTime(),
+    )
+    .reduce<Map<string, ReturnType<typeof getLocalizedBlogPosts>>>(
+      (groups, post) => {
+        let year = post.metadata.publishedAt.slice(0, 4);
+        let posts = groups.get(year) ?? [];
+
+        posts.push(post);
+        groups.set(year, posts);
+
+        return groups;
+      },
+      new Map(),
+    );
 
   return (
-    <div>
-      {allBlogs
-        .sort((a, b) => {
-          if (
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
-          ) {
-            return -1;
-          }
-          return 1;
-        })
-        .map((post) => (
-          <Link
-            key={post.slug}
-            className="mb-4 flex flex-col space-y-1 text-lg"
-            href={`/blog/${post.slug}`}
-          >
-            <div className="flex w-full flex-col space-x-0 font-medium md:flex-row md:space-x-2">
-              <p className="w-fit text-neutral-600 tabular-nums dark:text-neutral-400">
-                {formatDate(post.metadata.publishedAt, false, language)}
-              </p>
-              <p className="text-neutral-900 dark:text-neutral-100">
-                {post.metadata.title}
-              </p>
-            </div>
-          </Link>
-        ))}
+    <div className="space-y-14">
+      {[...blogsByYear].map(([year, posts]) => (
+        <section
+          key={year}
+          aria-labelledby={`posts-${year}`}
+          className="grid gap-5 sm:grid-cols-[6rem_1fr] sm:gap-8"
+        >
+          <div>
+            <h2
+              id={`posts-${year}`}
+              className="font-nunito bg-white-brown-600 text-white-brown-950 inline-block rounded-xl px-3 py-2 text-xl leading-none"
+            >
+              {year}
+            </h2>
+          </div>
+          <ul className="space-y-3">
+            {posts.map((post) => (
+              <li key={post.slug}>
+                <Link
+                  className="group border-white-brown-500 bg-white-brown-200 hover:bg-white-brown-500 flex flex-col gap-3 rounded-2xl border px-5 py-4 transition-all hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-8"
+                  href={`/blog/${post.slug}`}
+                >
+                  <span className="font-nunito text-white-black-900 text-lg leading-snug">
+                    {post.metadata.title}
+                  </span>
+                  <span className="text-white-black-600 flex shrink-0 items-center gap-2 text-sm">
+                    <time
+                      dateTime={post.metadata.publishedAt}
+                      className="tabular-nums"
+                    >
+                      {formatDate(post.metadata.publishedAt, false, language)}
+                    </time>
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="text-white-brown-800 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }

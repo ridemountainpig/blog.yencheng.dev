@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { BlogPosts } from "app/components/posts";
 import { HomeLanguageSwitcher } from "app/components/language-switcher";
 import { PostLanguage } from "app/blog/utils";
+import Image from "next/image";
 
 const homeCopy: Record<PostLanguage, { title: string; introduction: string }> =
   {
@@ -20,30 +22,60 @@ type HomePageProps = {
   searchParams: Promise<{ lang?: string | string[] }>;
 };
 
+export async function generateMetadata({
+  searchParams,
+}: HomePageProps): Promise<Metadata> {
+  let { lang } = await searchParams;
+  let language: PostLanguage = lang === "zh-TW" ? "zh-TW" : "en";
+  let copy = homeCopy[language];
+
+  return {
+    title: copy.title,
+    description: copy.introduction,
+    alternates: {
+      canonical: "/",
+      types: {
+        "application/rss+xml": "/rss",
+      },
+    },
+  };
+}
+
 export default async function Page({ searchParams }: HomePageProps) {
   let { lang } = await searchParams;
   let language: PostLanguage = lang === "zh-TW" ? "zh-TW" : "en";
   let copy = homeCopy[language];
 
   return (
-    <section lang={language}>
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex h-fit items-center gap-x-2">
-          <img
-            src="/yencheng.png"
-            alt="Yen Cheng"
-            className="-ml-2 h-12 w-12 rounded-full"
-          />
-          <h1 className="text-3xl font-semibold tracking-wide">{copy.title}</h1>
+    <section lang={language} className="mx-auto w-full max-w-4xl">
+      <header className="mb-16 text-center sm:mb-20">
+        <Image
+          src="/yencheng.png"
+          alt="Yen Cheng"
+          width={72}
+          height={72}
+          priority
+          className="bg-white-brown-500 mx-auto size-[72px] rounded-2xl p-1"
+        />
+        <div className="mt-7">
+          <div className="relative inline-block">
+            <span
+              aria-hidden="true"
+              className="bg-white-brown-600 title-highlight absolute bottom-1 left-0 h-5 w-full opacity-90 sm:h-6"
+            />
+            <h1 className="font-nunito relative text-4xl tracking-wide sm:text-5xl">
+              {copy.title}
+            </h1>
+          </div>
         </div>
-        <HomeLanguageSwitcher currentLanguage={language} />
-      </div>
-      <p className="mb-4 inline-flex items-center text-lg font-medium">
-        {copy.introduction}
-      </p>
-      <div className="my-8">
-        <BlogPosts language={language} />
-      </div>
+        <p className="text-white-black-700 mx-auto mt-8 max-w-3xl text-lg leading-8">
+          {copy.introduction}
+        </p>
+        <div className="mt-6 flex justify-center">
+          <HomeLanguageSwitcher currentLanguage={language} />
+        </div>
+      </header>
+      <BlogPosts language={language} />
     </section>
   );
 }

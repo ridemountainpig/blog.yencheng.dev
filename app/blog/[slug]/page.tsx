@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { CustomMDX } from "app/components/mdx";
 import { LanguageSwitcher } from "app/components/language-switcher";
 import {
@@ -50,6 +52,10 @@ export async function generateMetadata({
       `${baseUrl}/blog/${translation.slug}`,
     ]),
   );
+  let defaultTranslation =
+    translations.find((translation) => getPostLanguage(translation) === "en") ??
+    post;
+  languages["x-default"] = `${baseUrl}/blog/${defaultTranslation.slug}`;
 
   return {
     title,
@@ -57,6 +63,9 @@ export async function generateMetadata({
     alternates: {
       canonical: `${baseUrl}/blog/${postSlug}`,
       languages,
+      types: {
+        "application/rss+xml": "/rss",
+      },
     },
     openGraph: {
       title,
@@ -98,7 +107,7 @@ export default async function Blog({ params }: BlogPageProps) {
   let translations = getPostTranslations(post, posts);
 
   return (
-    <section lang={language}>
+    <section lang={language} className="article-page mx-auto w-full max-w-3xl">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -113,25 +122,48 @@ export default async function Blog({ params }: BlogPageProps) {
             inLanguage: language,
             image: post.metadata.image
               ? `${baseUrl}${post.metadata.image}`
-              : `/og?title=${encodeURIComponent(post.metadata.title)}`,
+              : `${baseUrl}/og?title=${encodeURIComponent(post.metadata.title)}`,
             url: `${baseUrl}/blog/${post.slug}`,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `${baseUrl}/blog/${post.slug}`,
+            },
             author: {
               "@type": "Person",
-              name: "My Portfolio",
+              name: "Yen Cheng Lin",
+              url: "https://yencheng.dev",
             },
           }),
         }}
       />
-      <h1 className="title text-2xl font-semibold">{post.metadata.title}</h1>
-      <div className="mt-2 mb-8 flex flex-wrap items-center justify-between gap-3 text-lg">
-        <p className="text-lg text-neutral-600 dark:text-neutral-400">
+      <header className="mb-12">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <h1 className="title font-nunito text-3xl leading-tight tracking-wide sm:text-4xl">
+            {post.metadata.title}
+          </h1>
+          <div className="shrink-0 sm:pt-1.5">
+            <LanguageSwitcher
+              currentSlug={post.slug}
+              translations={translations}
+            />
+          </div>
+        </div>
+        <p className="text-white-black-600 mt-5 text-base">
           {formatDate(post.metadata.publishedAt, false, language)}
         </p>
-        <LanguageSwitcher currentSlug={post.slug} translations={translations} />
-      </div>
-      <article className="prose text-lg tracking-wider">
+      </header>
+      <article className="prose text-lg leading-8 tracking-wide">
         <CustomMDX source={post.content} />
       </article>
+      <div className="mt-14">
+        <Link
+          href={language === "zh-TW" ? "/?lang=zh-TW" : "/"}
+          className="font-nunito bg-white-brown-500 text-white-brown-800 inline-flex items-center gap-1.5 rounded-xl px-4 py-2 transition-transform hover:-translate-y-0.5"
+        >
+          <ArrowLeft strokeWidth={2.25} className="size-4" />
+          {language === "zh-TW" ? "回到部落格" : "Back to Blog"}
+        </Link>
+      </div>
     </section>
   );
 }

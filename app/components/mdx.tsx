@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image, { type ImageProps } from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
 import React from "react";
@@ -53,7 +53,34 @@ function RoundedImage(props) {
     return <Video {...props} />;
   }
 
-  return <img alt={props.alt || ""} className="rounded-2xl" {...props} />;
+  return (
+    <img
+      alt={props.alt || ""}
+      loading="lazy"
+      decoding="async"
+      className="rounded-2xl"
+      {...props}
+    />
+  );
+}
+
+function ImageGrid({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="my-6 grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
+  );
+}
+
+function GridImage({ width = 900, height = 1200, ...props }: ImageProps) {
+  return (
+    <Image
+      {...props}
+      width={width}
+      height={height}
+      className="h-auto w-full rounded-2xl"
+      sizes="(min-width: 672px) 328px, calc(100vw - 48px)"
+      style={{ ...props.style, margin: 0 }}
+    />
+  );
 }
 
 function Code({ children, ...props }) {
@@ -68,7 +95,7 @@ function slugify(str) {
     .trim() // Remove whitespace from both ends of a string
     .replace(/\s+/g, "-") // Replace spaces with -
     .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
+    .replace(/[^\p{L}\p{N}-]+/gu, "") // Keep letters and numbers from every language
     .replace(/\-\-+/g, "-"); // Replace multiple - with single -
 }
 
@@ -81,8 +108,7 @@ function createHeading(level) {
         id: slug,
         className: [
           "w-fit",
-          level <= 2 &&
-            "border-b-3 border-neutral-700 border-dashed dark:border-neutral-300",
+          level <= 2 && "border-white-brown-700 border-b-3 border-dashed",
         ]
           .filter(Boolean)
           .join(" "),
@@ -113,6 +139,8 @@ let components = {
   img: RoundedImage,
   a: CustomLink,
   code: Code,
+  GridImage,
+  ImageGrid,
   Table,
   Video,
 };

@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-/* English font */
-@font-face {
-  font-family: "Nunito Bold Scoped";
-  src: url("/fonts/NunitoBold.woff2") format("woff2");
-  unicode-range: U+0000-00FF;
-}
-
 /* Chinese font */
 @font-face {
   font-family: "Huninn Regular Scoped";
@@ -30,24 +23,18 @@
   --sh-entity: #e25a1c;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sh-class: #4c97f8;
-    --sh-identifier: white;
-    --sh-keyword: #f47067;
-    --sh-string: #0fa295;
-  }
-  html {
-    color-scheme: dark;
-  }
-}
-
 html {
   min-width: 360px;
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: "Nunito Bold Scoped", "Huninn Regular Scoped", sans-serif;
+  font-family: "Huninn Regular Scoped", Arial, Helvetica, sans-serif;
+}
+
+a:focus-visible {
+  outline: 3px solid #dbc7ba;
+  outline-offset: 3px;
 }
 
 .prose .anchor {
@@ -65,11 +52,15 @@ body {
 }
 
 .prose a {
-  @apply underline decoration-neutral-400 decoration-[0.1em] underline-offset-2 transition-all dark:decoration-neutral-600;
+  @apply text-white-brown-900 decoration-white-brown-600 underline decoration-[0.12em] underline-offset-3 transition-colors;
+}
+
+.prose a:hover {
+  @apply text-white-brown-700;
 }
 
 .prose .anchor:after {
-  @apply text-neutral-300 dark:text-neutral-700;
+  @apply text-white-brown-700;
   content: "#";
 }
 
@@ -78,15 +69,15 @@ body {
 }
 
 .prose pre {
-  @apply my-4 overflow-x-auto rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-900 dark:bg-neutral-900;
+  @apply border-white-brown-500 bg-white-brown-200 my-6 overflow-x-auto rounded-2xl border px-4 py-3 text-sm;
 }
 
 .prose code {
-  @apply rounded-lg px-1 py-0.5;
+  @apply bg-white-brown-500 rounded-md px-1.5 py-0.5;
 }
 
 .prose pre code {
-  @apply p-0;
+  @apply bg-transparent p-0;
   border: initial;
   line-height: 1.5;
 }
@@ -96,39 +87,32 @@ body {
   color: #1a1a1a !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .prose pre code,
-  .prose pre code * {
-    color: #fafafa !important;
-  }
-}
-
 .prose code span {
   @apply font-semibold;
 }
 
 .prose img {
-  @apply mx-0 my-4;
+  @apply mx-0 my-6;
 }
 
 .prose p {
-  @apply my-4 font-thin text-neutral-800 dark:text-neutral-200;
+  @apply text-white-black-800 my-5;
 }
 
 .prose h1 {
-  @apply mt-6 mb-2 text-2xl font-medium;
+  @apply font-nunito mt-10 mb-3 text-2xl;
 }
 
 .prose h2 {
-  @apply mt-6 mb-2 text-xl font-medium;
+  @apply font-nunito mt-10 mb-3 text-2xl;
 }
 
 .prose h3 {
-  @apply mt-6 mb-2 text-lg font-medium;
+  @apply font-nunito mt-8 mb-3 text-xl;
 }
 
 .prose h4 {
-  @apply mt-6 mb-2 text-base font-medium;
+  @apply font-nunito mt-8 mb-3 text-lg;
 }
 
 .prose strong {
@@ -136,11 +120,28 @@ body {
 }
 
 .prose ul {
-  @apply list-disc pl-6;
+  @apply text-white-black-800 my-5 list-disc space-y-2 pl-6;
 }
 
 .prose ol {
-  @apply list-decimal pl-6;
+  @apply text-white-black-800 my-5 list-decimal space-y-2 pl-6;
+}
+
+.prose blockquote {
+  @apply border-white-brown-700 bg-white-brown-300 text-white-black-700 my-6 rounded-r-2xl border-l-4 px-5 py-1;
+}
+
+.prose hr {
+  @apply border-white-brown-500 my-10;
+}
+
+.prose th,
+.prose td {
+  @apply border-white-brown-500 border px-3 py-2 text-left;
+}
+
+.prose th {
+  @apply bg-white-brown-500 font-nunito;
 }
 
 .prose > :first-child {
@@ -177,6 +178,26 @@ table {
   text-wrap: balance;
 }
 
+.title-highlight {
+  transform-origin: left;
+  animation: title-highlight 0.6s ease-in-out both;
+}
+
+@keyframes title-highlight {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-highlight {
+    animation: none;
+  }
+}
+
 @theme {
   --color-white-black-50: #fafafa;
   --color-white-black-100: #e4e4e4;
@@ -201,6 +222,6 @@ table {
   --color-white-brown-900: #6e402e;
   --color-white-brown-950: #472013;
 
-  --font-nunito: "Nunito", sans-serif;
+  --font-nunito: var(--font-nunito-local), "Huninn Regular Scoped", sans-serif;
   --font-huninn-regular: "Huninn Regular Scoped", sans-serif;
 }
