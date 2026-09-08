@@ -64,9 +64,24 @@ function RoundedImage(props) {
   );
 }
 
-function ImageGrid({ children }: { children: React.ReactNode }) {
+const imageGridColumnClasses: Record<string, string> = {
+  "2": "grid-cols-1 sm:grid-cols-2",
+  "5": "grid-cols-2 sm:grid-cols-5",
+};
+
+function ImageGrid({
+  children,
+  columns = 2,
+}: {
+  children: React.ReactNode;
+  columns?: number | string;
+}) {
   return (
-    <div className="my-6 grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
+    <div
+      className={`my-6 grid gap-2 ${imageGridColumnClasses[String(columns)] ?? imageGridColumnClasses["2"]}`}
+    >
+      {children}
+    </div>
   );
 }
 
